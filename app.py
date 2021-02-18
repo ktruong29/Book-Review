@@ -3,7 +3,7 @@ import pymysql
 from wtforms import Form, TextField, PasswordField, validators
 from passlib.hash import sha256_crypt
 from functools import wraps
-import config 
+import config
 # import boto3
 import gc
 import sys
@@ -13,6 +13,17 @@ import os
 logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 app.secret_key = 'hjkdjeuqoe157!@'
+
+#Connecting to MySQL instance RDS
+try:
+    db = pymysql.connect(host     = customhost,
+                         port     = 3306,
+                         user     = customuser,
+                         password = custompass,
+                         db       = customdb
+                        )
+except Exception as e:
+    print(str(e))
 
 @app.route('/')
 def home():
