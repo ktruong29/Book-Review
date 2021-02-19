@@ -29,6 +29,10 @@ except Exception as e:
 def home():
     return render_template('home.html')
 
+@app.route('/')
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    pass
 
 if __name__ == "__main__":
     app.run(debug=True)
