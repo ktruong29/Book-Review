@@ -1,31 +1,42 @@
 CREATE DATABASE IF NOT EXISTS `LIBRARY` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `LIBRARY`;
 
-CREATE TABLE IF NOT EXISTS `PERSON` (
-	`id` int(11) NOT NULL AUTO_INCREMENT,
-    `FirstName` varchar(50) NOT NULL,
-    `LastName` varchar(50) NOT NULL,
-    `Email` varchar(100) NOT NULL,
-    `Role` varchar(10) NOT NULL,
-    `Username` varchar(50) NOT NULL,
-    `Password` varchar(100) NOT NULL,
+CREATE TABLE IF NOT EXISTS `PERSON`
+(
+		`id` 				INT NOT NULL AUTO_INCREMENT,
+    `FirstName` VARCHAR(50) NOT NULL,
+    `LastName` 	VARCHAR(50) NOT NULL,
+    `Email` 		VARCHAR(100) NOT NULL,
+    `Role` 			VARCHAR(10) NOT NULL,
+    `Username` 	VARCHAR(50) NOT NULL,
+    `Password` 	VARCHAR(100) NOT NULL,
     PRIMARY KEY (`id`)
-) DEFAULT CHARSET=utf8;
+);
 
-CREATE TABLE IF NOT EXISTS `COMMENT` (
-  `CommentID` INT NOT NULL,
-  `DatePosted` DATETIME NOT NULL,
-  `Comment` TEXT(3000) NULL,
-  `Rating` INT NULL,
-  `PersonID` VARCHAR(45) NOT NULL,
-  `ISBN` INT NOT NULL,
-  PRIMARY KEY (`CommentID`));
-
-CREATE TABLE IF NOT EXISTS `BOOK` (
-  `ISBN` INT NOT NULL,
-  `Title` VARCHAR(255) NULL,
-  `Description` TEXT(3000) NULL,
-  `AuthorName` VARCHAR(45) NULL,
+CREATE TABLE IF NOT EXISTS `BOOK`
+(
+  `ISBN` 					INT NOT NULL,
+  `Title` 				VARCHAR(255) NULL,
+  `Description` 	TEXT(3000) NULL,
+  `AuthorName` 		VARCHAR(45) NULL,
   `AverageRating` DECIMAL(4,2) NULL,
-  `URL_LINK` VARCHAR(255) NULL,
-  PRIMARY KEY (`ISBN`));
+  `URL_LINK` 			VARCHAR(255) NULL,
+  PRIMARY KEY (`ISBN`)
+);
+
+CREATE TABLE IF NOT EXISTS `COMMENT`
+(
+  `CommentID` 	INT NOT NULL,
+  `DatePosted` 	DATETIME NOT NULL,
+  `Comment` 		TEXT(3000) NULL,
+  `Rating` 			INT NULL,
+  `PersonID` 		INT NOT NULL,
+  `ISBN` 				INT NOT NULL,
+  PRIMARY KEY (`CommentID`),
+	FOREIGN KEY(`PersonID`) REFERENCES PERSON(`id`)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE,
+	FOREIGN KEY(`ISBN`) REFERENCES BOOK(`ISBN`)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE,
+);
