@@ -21,7 +21,6 @@ DB_USER      = "admin"
 DB_PASS      = "group362"
 DB_NAME      = "LIBRARY"
 
-
 #Connecting to MySQL instance RDS
 def db_connect():
     try:
@@ -76,7 +75,7 @@ def register():
                     db.commit() # save registered account into database
         finally:
             db.close() # close mysql connection
-    
+
     return render_template('register.html', error_msg = error_msg)
 
 if __name__ == "__main__":
