@@ -22,12 +22,20 @@ DB_PASS      = "group362"
 DB_NAME      = "LIBRARY"
 
 #Connecting to MySQL instance RDS
-def db_connect():
-    try:
-        db = pymysql.connect(host=DB_HOST, port=3306, user=DB_USER, password=DB_PASS, db=DB_NAME)
-        return db
-    except Exception as e:
-        print(str(e))
+try:
+    db = pymysql.connect(host=DB_HOST, port=3306, user=DB_USER, password=DB_PASS, db=DB_NAME)
+except Exception as e:
+    print(str(e))
+
+#Registration form that can validate user inputs
+class RegistrationForm(Form):
+    fname    = TextField('First name', [validators.Length(min=1, max=30)])
+    lname    = TextField('Last name', [validators.Length(min=1, max=30)])
+    email    = TextField('Email address', [validators.Length(min=6, max=50)])
+    username = TextField('Username', [validators.Length(min=4, max=100)])
+    password = PasswordField('Password', [validators.Required(),
+                                          validators.EqualTo('confirm', message="Password must match")])
+    confirm  = PasswordField('Repeat Password')
 
 @app.route('/')
 def home():
@@ -35,48 +43,35 @@ def home():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    error_msg =''
-    # check if user has filled out all of the input
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form and 'firstname' in request.form and 'lastname' in request.form:
-        # grab input from request form
-        username, password, email, firstname, lastname = request.form['username'], request.form['password'], request.form['email'], request.form['firstname'], request.form['lastname']
-        # connect to mysql database
-        db = db_connect()
+    try:
+        form = RegistrationForm(request.form)
+        if request.method == 'POST' and form.validate():
+            first_name  = form.fname.data
+            last_name   = form.lname.data
+            email       = form.email.data
+            usr_name    = form.username.data
+            passwd      = sha256_crypt.encrypt((str(form.password.data)))
+            role        = "user"
 
-        try:
-            with db.cursor() as cur:
-                # query the user account first
-                cur.execute("SELECT * FROM PERSON WHERE username=%s", (username))
-                user = cur.fetchone()
-
-                # check if user account already exist
-                if user:
-                    error_msg = "Account already exist! Try another username"
-                elif not re.match(r'[A-Za-z]+', firstname):
-                    error_msg = "Invalid first name!"
-                elif not re.match(r'[A-Za-z]+', lastname):
-                    error_msg = "Invalid last name!"
-                elif not re.match(r'[A-Za-z0-9_.-]+', username):
-                    # username allow A-Z, a-z, 0-9, characters like _, ., -
-                    error_msg = "Invalid username!"
-                elif not re.fullmatch(r'[A-Za-z0-9@#$%^&+=]{8,}', password):
-                    # password need to have at least 8 character that matches
-                    # A-Z, a-z, 0-9, characters like @, #, $, %, ^, &, +, =
-                    error_msg = "Invalid password!"
-                elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-                    # email needs a @ and also a . after @
-                    error_msg = "Invalid email!"
-                elif not firstname or not lastname or not username or not password or not email:
-                    error_msg = "Field missing, please fill out everything!"
-                else:
-                    # create the user in the database
-                    cur.execute("INSERT INTO PERSON VALUES (NULL, %s, %s, %s, %s, %s, %s)", (firstname, lastname, email, "user", username, password))
-                    error_msg = "You have successfully registered!" # not an error msg
-                    db.commit() # save registered account into database
-        finally:
-            db.close() # close mysql connection
-
-    return render_template('register.html', error_msg = error_msg)
+            #Checking for duplicate username
+            cursor = db.cursor()
+            x = cursor.execute("SELECT * FROM PERSON WHERE Username=(%s)", (usr_name))
+            cursor.close()
+            if int(x) > 0:
+                flash("That username is already taken. Please choose another")
+                return render_template('register.html', form=form)
+            else:
+                cursor = db.cursor()
+                cursor.execute("INSERT INTO PERSON (Username, Password, Email, FirstName, LastName, Role) VALUES (%s, %s, %s, %s, %s, %s)",
+                                (usr_name, passwd, email, first_name, last_name, role))
+                db.commit()
+                cursor.close()
+                gc.collect()
+                flash("You have successfully registered your account")
+                return redirect('/')
+        return render_template('register.html', form=form)
+    except Exception as e:
+        return(str(e))
 
 if __name__ == "__main__":
     app.run(debug=True)
