@@ -1,63 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% extends 'base.html' %}
 
-    <!-- Website Title -->
-    <title>Group Project 362</title>
+{% block head %}
+<title>Group Project 362</title>
+{% endblock %}
 
-    <!-- Styles -->
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:500,700&display=swap&subset=latin-ext" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600&display=swap&subset=latin-ext" rel="stylesheet">
-    <link href="static/css/bootstrap.css" rel="stylesheet">
-    <link href="static/css/fontawesome-all.css" rel="stylesheet">
-  	<link href="static/css/styles.css" rel="stylesheet">
+{% block body %}
+  <!-- Navbar -->
+<nav class="navbar navbar-expand-md navbar-dark navbar-custom fixed-top">
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link page-scroll" href="#header">HOME <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link page-scroll" href="#callMe">ABOUT US</a>
+      </li>
 
-</head>
-<body data-spy="scroll" data-target=".fixed-top">
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-md navbar-dark navbar-custom fixed-top">
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link page-scroll" href="#header">HOME <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link page-scroll" href="#callMe">ABOUT US</a>
-                </li>
+      <li class="nav-item">
+        <a class="nav-link page-scroll" href="#contact">CONTACT US</a>
+      </li>
+    </ul>
+  </div>
+</nav> <!-- end of navbar -->
+<!-- end of navbar -->
 
-                <li class="nav-item">
-                    <a class="nav-link page-scroll" href="#contact">CONTACT US</a>
-                </li>
-            </ul>
-        </div>
-    </nav> <!-- end of navbar -->
-    <!-- end of navbar -->
+<!-- Header -->
+<header id="header" class="header">
+  <div class="header-content">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="text-container">
+            <h1>GROUP PROJECT 362</h1>
+            <p class="p-heading p-large">For new users - Register an account to use this app</p>
+            <p class="p-heading p-large">For existing users - Sign on</p>
+            <a class="btn-solid-lg page-scroll" href="#intro">REGISTER</a>
+            <a class="btn-solid-lg page-scroll" href="#intro">SIGN ON</a>
+          </div>
+        </div> <!-- end of col -->
+      </div> <!-- end of row -->
+    </div> <!-- end of container -->
+  </div> <!-- end of header-content -->
+</header> <!-- end of header -->
 
-    <!-- Header -->
-    <header id="header" class="header">
-        <div class="header-content">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="text-container">
-                            <h1>GROUP PROJECT 362</h1>
-                            <p class="p-heading p-large">For new users - Register an account to use this app</p>
-                            <p class="p-heading p-large">For existing users - Sign on</p>
-                            <a class="btn-solid-lg page-scroll" href="#intro">REGISTER</a>
-                            <a class="btn-solid-lg page-scroll" href="#intro">SIGN ON</a>
-                        </div>
-                    </div> <!-- end of col -->
-                </div> <!-- end of row -->
-            </div> <!-- end of container -->
-        </div> <!-- end of header-content -->
-    </header> <!-- end of header -->
-    <!-- end of header -->
-
-    <!-- Scripts -->
-    <script src="static/js/jquery.min.js"></script> <!-- jQuery for Bootstrap's JavaScript plugins -->
-    <script src="static/js/popper.min.js"></script> <!-- Popper tooltip library for Bootstrap -->
-    <script src="static/js/bootstrap.min.js"></script> <!-- Bootstrap framework -->
-</body>
-</html>
+{% endblock %}
