@@ -33,7 +33,7 @@ class RegistrationForm(Form):
     lname    = TextField('Last name', [validators.Length(min=1, max=30)])
     email    = TextField('Email address', [validators.Length(min=6, max=50)])
     username = TextField('Username', [validators.Length(min=4, max=100)])
-    password = PasswordField('Password', [validators.Required(),
+    password = PasswordField('Password', [validators.DataRequired(),
                                           validators.EqualTo('confirm', message="Password must match")])
     confirm  = PasswordField('Repeat Password')
 
