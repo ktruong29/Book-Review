@@ -16,9 +16,11 @@ app = Flask(__name__)
 app.secret_key = 'hjkdjeuqoe157!@'
 
 #customhost = <your db endpoint address>
-DB_HOST      = "aws-project-362.cxt6a6u8d073.us-east-1.rds.amazonaws.com"
+DB_HOST      = "cpsc362.cqz5lsbthplh.us-east-2.rds.amazonaws.com"
+#DB_HOST      = "aws-project-362.cxt6a6u8d073.us-east-1.rds.amazonaws.com"
 DB_USER      = "admin"
-DB_PASS      = "group362"
+#DB_PASS      = "group362"
+DB_PASS      = "adminadmin"
 DB_NAME      = "LIBRARY"
 
 #Connecting to MySQL instance RDS
@@ -72,6 +74,35 @@ def register():
         return render_template('register.html', form=form)
     except Exception as e:
         return(str(e))
+
+@app.route('/login', methods=["GET","POST"])
+def login_page():
+    error = ''
+    try:
+        cursor = db.cursor()
+        if request.method == "POST":
+
+            data = cursor.execute("SELECT * FROM PERSON WHERE Username = (%s)", thwart(request.form['Username']))
+            data = cursor.fetchone()[6]
+
+            if sha256_crypt.verify(request.form['Password'], data):
+                session['logged_in'] = True
+                session['Username'] = request.form['Username']
+
+                flash("You are now logged in")
+                return redirect('/')
+            else:
+                error = "Invalid credentials, try again."
+
+        gc.collect()
+
+        return render_template("login.html", error=error)
+
+    except Exception as e:
+        #flash(e)
+        error = "Invalid credentials, try again."
+        return render_template("login.html", error = error)  
+
 
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
