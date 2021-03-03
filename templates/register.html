@@ -17,7 +17,7 @@
           <div class="text-container">
             <h1>Create an account</h1>
             {% from '_formhelpers.html' import render_field %}
-            <form action="/register" method="POST">
+            <form autocomplete="off" action="/register" method="POST">
               <dl>
                 {{render_field(form.fname)}}
                 {{render_field(form.lname)}}
