@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, request, session, flash
 import pymysql
 from wtforms import Form, TextField, PasswordField, validators
+from wtforms.fields.html5 import EmailField
 from passlib.hash import sha256_crypt
 from functools import wraps
 import config
@@ -30,10 +31,13 @@ except Exception as e:
     print(str(e))
 
 #Registration form that can validate user inputs
+#To use validators.Email, first install $ pip3 install wtforms[email]
 class RegistrationForm(Form):
     fname    = TextField('First name', [validators.Length(min=1, max=30)])
     lname    = TextField('Last name', [validators.Length(min=1, max=30)])
-    email    = TextField('Email address', [validators.Length(min=6, max=50)])
+    email    = EmailField('Email address', [validators.Length(min=6, max=50),
+                                            validators.Email(message="Enter a valid email"),
+                                            validators.DataRequired()])
     username = TextField('Username', [validators.Length(min=4, max=100)])
     password = PasswordField('Password', [validators.DataRequired(),
                                           validators.EqualTo('confirm', message="Password must match")])
