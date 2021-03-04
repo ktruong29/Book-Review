@@ -41,6 +41,7 @@ class RegistrationForm(Form):
 
 @app.route('/')
 def home():
+    app.logger.info('Yes1~~')
     return render_template('home.html')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -78,35 +79,35 @@ def register():
 @app.route('/login', methods=["GET","POST"])
 def login_page():
     error = ''
+    # app.logger.info('Yes7~~')
     try:
-        cursor = db.cursor()
-        if request.method == "POST":
+        if request.method == 'POST':
+            # app.logger.info('Yes6~~')
+            cursor = db.cursor()
+            username = request.form['username']
+            data = cursor.execute("SELECT * FROM PERSON WHERE Username = (%s)", (username))
+            data = cursor.fetchone()
+            cursor.close()
 
-            data = cursor.execute("SELECT * FROM PERSON WHERE Username = (%s)", thwart(request.form['Username']))
-            data = cursor.fetchone()[6]
-
-            if sha256_crypt.verify(request.form['Password'], data):
+            if sha256_crypt.verify(request.form['password'], data[6]):
                 session['logged_in'] = True
-                session['Username'] = request.form['Username']
-
+                session['username'] = username
+                session['user_id'] = data[0]
                 flash("You are now logged in")
                 return redirect('/')
             else:
                 error = "Invalid credentials, try again."
-
         gc.collect()
-
+        # app.logger.info('Yes8~~')
         return render_template("login.html", error=error)
 
     except Exception as e:
-        #flash(e)
-        error = "Invalid credentials, try again."
-        return render_template("login.html", error = error)  
+        error = str(e)
+        return render_template("login.html", error = error)
 
-
-@app.route('/login', methods = ['GET', 'POST'])
-def login():
-    return render_template('login.html')
+@app.route('/dashboard', methods=['GET', 'POST'])
+def dahboard():
+    return Hello
 
 if __name__ == "__main__":
     app.run(debug=True)
