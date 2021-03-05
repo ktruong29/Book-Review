@@ -80,6 +80,16 @@ def register():
     except Exception as e:
         return(str(e))
 
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash("You need to login first")
+            return redirect('/login')
+    return wrap
+
 @app.route('/login', methods=["GET","POST"])
 def login_page():
     error = ''
@@ -98,7 +108,7 @@ def login_page():
                 session['username'] = username
                 session['user_id'] = data[0]
                 flash("You are now logged in")
-                return redirect('/')
+                return redirect('/dashboard')
             else:
                 error = "Invalid credentials, try again."
         gc.collect()
@@ -110,8 +120,10 @@ def login_page():
         return render_template("login.html", error = error)
 
 @app.route('/dashboard', methods=['GET', 'POST'])
+@login_required
 def dahboard():
-    return Hello
+    username = session['username']
+    return username
 
 if __name__ == "__main__":
     app.run(debug=True)
