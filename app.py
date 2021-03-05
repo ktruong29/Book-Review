@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, request, session, flash
 import pymysql
 from wtforms import Form, TextField, PasswordField, validators
+from wtforms.fields.html5 import EmailField
 from passlib.hash import sha256_crypt
 from functools import wraps
 import config
@@ -30,10 +31,13 @@ except Exception as e:
     print(str(e))
 
 #Registration form that can validate user inputs
+#To use validators.Email, first install $ pip3 install wtforms[email]
 class RegistrationForm(Form):
     fname    = TextField('First name', [validators.Length(min=1, max=30)])
     lname    = TextField('Last name', [validators.Length(min=1, max=30)])
-    email    = TextField('Email address', [validators.Length(min=6, max=50)])
+    email    = EmailField('Email address', [validators.Length(min=6, max=50),
+                                            validators.Email(message="Enter a valid email"),
+                                            validators.DataRequired()])
     username = TextField('Username', [validators.Length(min=4, max=100)])
     password = PasswordField('Password', [validators.DataRequired(),
                                           validators.EqualTo('confirm', message="Password must match")])
@@ -76,6 +80,16 @@ def register():
     except Exception as e:
         return(str(e))
 
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash("You need to login first")
+            return redirect('/login')
+    return wrap
+
 @app.route('/login', methods=["GET","POST"])
 def login_page():
     error = ''
@@ -94,7 +108,7 @@ def login_page():
                 session['username'] = username
                 session['user_id'] = data[0]
                 flash("You are now logged in")
-                return redirect('/')
+                return redirect('/dashboard')
             else:
                 error = "Invalid credentials, try again."
         gc.collect()
@@ -106,8 +120,10 @@ def login_page():
         return render_template("login.html", error = error)
 
 @app.route('/dashboard', methods=['GET', 'POST'])
+@login_required
 def dahboard():
-    return Hello
+    username = session['username']
+    return username
 
 if __name__ == "__main__":
     app.run(debug=True)
