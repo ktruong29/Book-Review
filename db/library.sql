@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS `PERSON`
     `Role` 			VARCHAR(10) NOT NULL,
     `Username` 	VARCHAR(50) NOT NULL,
     `Password` 	VARCHAR(100) NOT NULL,
+    `User_Picture_LINK` 		VARCHAR(255) NULL,
     PRIMARY KEY (`id`)
 );
 
