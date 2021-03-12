@@ -108,6 +108,7 @@ def login_page():
                 session['logged_in'] = True
                 session['username'] = username
                 session['user_id'] = data[0]
+                session['first_name'] = data[1]
                 flash("You are now logged in")
                 return redirect('/dashboard')
             else:
@@ -124,7 +125,8 @@ def login_page():
 @login_required
 def dahboard():
     username = session['username']
-    return username
+    first_name = session['first_name']
+    return render_template('dashboard.html', first_name=first_name)
 
 if __name__ == "__main__":
     app.run(debug=True)
