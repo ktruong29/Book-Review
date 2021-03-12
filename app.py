@@ -1,4 +1,4 @@
-path = "/users/sijie/anaconda3/lib/site-packages"
+
 from flask import Flask, render_template, redirect, request, session, flash
 import pymysql
 from wtforms import Form, TextField, PasswordField, validators
