@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, redirect, request, session, flash
 import pymysql
 from wtforms import Form, TextField, PasswordField, validators
@@ -113,8 +112,8 @@ def login_page():
             if sha256_crypt.verify(request.form['password'], data[6]):
                 session['logged_in'] = True
                 session['username'] = username
-                session['user_id'] = data[0]
                 session['first_name'] = data[1]
+                session['pic_name'] = data[7]
                 flash("You are now logged in")
                 return redirect('/dashboard')
             else:
@@ -130,9 +129,10 @@ def login_page():
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dahboard():
-    username = session['username']
+    # username = session['username']
     first_name = session['first_name']
-    return render_template('dashboard.html', first_name=first_name)
+    pic_name   = session['pic_name']
+    return render_template('dashboard.html', first_name=first_name, pic_name=pic_name)
 
 @app.route('/dashboard/change_passwd', methods=['GET', 'POST'])
 @login_required
@@ -180,6 +180,13 @@ def change_passwd():
 
     return render_template('change_passwd.html', error=error, form=form)
 
+@app.route('/logout')
+@login_required
+def logout():
+    session.clear()
+    gc.collect()
+    flash("You have been logged out")
+    return redirect('/')
 
 if __name__ == "__main__":
     app.run(debug=True)
