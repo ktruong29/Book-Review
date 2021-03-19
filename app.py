@@ -18,11 +18,9 @@ app = Flask(__name__)
 app.secret_key = 'hjkdjeuqoe157!@'
 
 #customhost = <your db endpoint address>
-DB_HOST      = "cpsc362.cqz5lsbthplh.us-east-2.rds.amazonaws.com"
-#DB_HOST      = "aws-project-362.cxt6a6u8d073.us-east-1.rds.amazonaws.com"
+DB_HOST      = "database-1.cykqbf99bmvw.us-west-1.rds.amazonaws.com"
 DB_USER      = "admin"
-#DB_PASS      = "group362"
-DB_PASS      = "adminadmin"
+DB_PASS      = "group362"
 DB_NAME      = "LIBRARY"
 
 #Connecting to MySQL instance RDS
@@ -40,9 +38,15 @@ class RegistrationForm(Form):
                                             validators.Email(message="Enter a valid email"),
                                             validators.DataRequired()])
     username = TextField('Username', [validators.Length(min=4, max=100)])
-    password = PasswordField('Password', [validators.DataRequired(),
+    password = PasswordField('Password', [validators.DataRequired(), validators.Length(min=6, max=20),
                                           validators.EqualTo('confirm', message="Password must match")])
     confirm  = PasswordField('Repeat Password')
+
+class ChangePasswordForm(Form):
+    old_password = PasswordField('Old Password', [validators.DataRequired()])
+    new_password = PasswordField('New Password', [validators.DataRequired(), validators.Length(min=6, max=20),
+                                          validators.EqualTo('confirm', message="Password must match")])
+    confirm  = PasswordField('Repeat New Password')
 
 @app.route('/')
 def home():
@@ -127,6 +131,53 @@ def dahboard():
     username = session['username']
     first_name = session['first_name']
     return render_template('dashboard.html', first_name=first_name)
+
+@app.route('/dashboard/change_passwd', methods=['GET', 'POST'])
+@login_required
+def change_passwd():
+    error = ''
+    username = session['username']
+    try:
+        form = ChangePasswordForm(request.form)
+        if request.method == 'POST' and form.validate():
+            oldpassword = form.old_password.data
+            newpassword = form.new_password.data
+            confirm = form.confirm.data
+
+            # app.logger.info('Yes6~~')
+            cursor = db.cursor()
+            data = cursor.execute("SELECT * FROM PERSON WHERE Username = (%s)", (username))
+            data = cursor.fetchone()
+            cursor.close()
+
+            if newpassword != confirm:
+                error = "New password must match"
+            else:
+                if sha256_crypt.verify(oldpassword, data[6]):
+                    new_password = sha256_crypt.encrypt((str(newpassword)))
+
+                    # update the new password to the database
+                    cursor = db.cursor()
+                    data = cursor.execute("UPDATE PERSON SET Password = (%s) WHERE Username = (%s)", (new_password, username))
+                    data = cursor.fetchone()
+                    db.commit()
+                    cursor.close()
+
+                    flash("You have changed your password!")
+                    return redirect('/dashboard')
+                else:
+                    error = "Invalid old password, try again."
+
+        else:
+            error = "Please fill in all of the field in the form"
+
+        gc.collect()
+        return render_template('change_passwd.html', error=error, first_name=username, form=form)
+    except Exception as e:
+        error = str(e)
+
+    return render_template('change_passwd.html', error=error, form=form)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
