@@ -13,12 +13,14 @@
   <!-- Three columns of text below the carousel -->
   <div class="row">
     <div class="text-center">
-      <img src="../static/images/piglet.jpg" alt="Pig" width="140" height="140" class="rounded-circle">
+      <img src="/static/images/{{ pic_name }}" alt="Pig" width="140" height="140" class="rounded-circle">
       <h2>Change password for {{ first_name }}</h2>
       {% from '_formhelpers.html' import render_field_black %}
       <form autocomplete="off" action="/dashboard/change_passwd" method="POST">
         <dl>
-          {{render_field_black(form.old_password)}} {{render_field_black(form.new_password)}} {{render_field_black(form.confirm)}}
+          {{render_field_black(form.old_password)}}
+          {{render_field_black(form.new_password)}}
+          {{render_field_black(form.confirm)}}
         </dl>
         <br>
         <p><input type="submit" value="Submit"></p>
