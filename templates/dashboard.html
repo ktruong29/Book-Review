@@ -81,55 +81,40 @@
     <!-- /.row -->
 
 
-    <!-- START THE FEATURETTES -->
+    <!-- loop start here . Set the counter to 0-->
+    {% set counter = namespace(value=0) %}
+    {% for book in books %}
+      {% if counter.value %2 == 0 %}
+        <!-- START THE FEATURETTES -->
+        <hr class="featurette-divider">
+        <!-- Book titles + images + books features -->
+        <div class="row featurette">
+          <div class="col-md-7">
+            <h2 class="featurette-heading"> {{ book[1] }}</h2>
+            <p class="lead">{{ book[3] }}</p>
+            <p> {{ book[2] }}</p>
+          </div>
+          <div class="col-md-4">
+            <a href="#"><img src="static/images/{{ book[6] }}" alt="Jumping" width="400" height="500" class="rounded mx-auto d-block"></a>
+          </div>
+        </div>
+      {% else %}
 
-    <hr class="featurette-divider">
-    <!-- Book titles + images + books features -->
+        <hr class="featurette-divider">
 
-    <div class="row featurette">
-      <div class="col-md-7">
-        <h2 class="featurette-heading"> Starting Out with C++: Early Objects(10th Edition)</h2>
-        <p class="lead">Tony Gaddis, Judy Walters, and Godfrey Muganda</p>
-        <p> Starting Out with C++: Early Objects introduces the fundamentals of C++ programming in clear and easy-to-understand language, making it accessible to novice programming students as well as those who have worked with different
-          languages.
-          The text is designed for use in two- and three-term C++ programming sequences, as well as in accelerated one-term programs. Its wealth of real-world examples encourages students to think about when, why, and how to apply the features
-          and constructs of C++. </p>
-      </div>
-
-      <div class="col-md-4">
-        <a href="#"><img src="static/images/Starting Out withh C++ Early Objects 10th Edition.jpeg" alt="Jumping" width="400" height="500" class="rounded mx-auto d-block"></a>
-      </div>
-    </div>
-
-    <hr class="featurette-divider">
-
-    <div class="row featurette">
-      <div class="col-md-7 order-md-2">
-        <h2 class="featurette-heading">Hamlet</h2>
-        <p class="lead">William Shakespeare</p>
-        <p> One of the greatest plays of all time, the compelling tragedy of the tormented young prince of Denmark continues to capture the imaginations of modern audiences worldwide. Confronted with evidence that his uncle murdered his father,
-          and with his mother’s infidelity, Hamlet must find a means of reconciling his longing for oblivion with his duty as avenger. The ghost, Hamlet’s feigned madness, Ophelia’s death and burial, the play within a play, the “closet scene”
-          in which Hamlet accuses his mother of complicity in murder, and breathtaking swordplay are just some of the elements that make Hamlet an enduring masterpiece of the theater. </p>
-      </div>
-      <div class="col-md-5 order-md-1">
-        <a href="#"><img src="static/images/Hamlet.jpg" alt="Jumping" width="400" height="500"></a>
-      </div>
-    </div>
-
-    <hr class="featurette-divider">
-
-    <div class="row featurette">
-      <div class="col-md-7">
-        <h2 class="featurette-heading">Harry Potter and the Sorcerer's Stone</h2>
-        <p class="lead">J.K. Rowling</p>
-        <p> Harry Potter has no idea how famous he is. That's because he's being raised by his miserable aunt and uncle who are terrified Harry will learn that he's really a wizard, just as his parents were. But everything changes when Harry is
-          summoned to attend an infamous school for wizards, and he begins to discover some clues about his illustrious birthright. From the surprising way he is greeted by a lovable giant, to the unique curriculum and colorful faculty at
-          his unusual school, Harry finds himself drawn deep inside a mystical world he never knew existed and closer to his own noble destiny. </p>
-      </div>
-      <div class="col-md-5">
-        <a href="#"><img src="static/images/Harry  Potter1.jpg" alt="Jumping" width="400" height="500"></a>
-      </div>
-    </div>
+        <div class="row featurette">
+          <div class="col-md-7 order-md-2">
+            <h2 class="featurette-heading">{{ book[1] }}</h2>
+            <p class="lead">{{ book[3] }}</p>
+            <p> {{ book[2] }} </p>
+          </div>
+          <div class="col-md-5 order-md-1">
+            <a href="#"><img src="static/images/{{ book[6] }}" alt="Jumping" width="400" height="500"></a>
+          </div>
+        </div>
+      {% endif %}
+      {% set counter.value = counter.value + 1 %}
+    {% endfor %}
 
     <hr class="featurette-divider">
 
