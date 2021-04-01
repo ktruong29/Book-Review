@@ -148,24 +148,17 @@ def dahboard():
     cursor  = db.cursor()
     data    = cursor.execute("SELECT * FROM PERSON WHERE Username = (%s)", (username))
     data    = cursor.fetchone()
-
-    data1    = cursor.execute("SELECT * FROM BOOK")
-    data1    = cursor.fetchall()  
-    cursor.close()
     session['pic_name'] = data[7]
     pic_name = session['pic_name']
-    
-    session['Booktitles'] = data1[1]
-    Booktitles = session[Booktitles]
-    session['Bookauthors'] = data1[3]
-    Bookauthors = session[Bookauthors]
-    session['Bookdescriptions'] = data1[2]
-    Bookdescriptions = session[Bookdescriptions]
-    session['Bookpic'] = data1[6]
-    Bookpic = session[Bookpic]
+
+    #Getting all the book information
+    books    = cursor.execute("SELECT * FROM BOOK")
+    books    = cursor.fetchall()
+    cursor.close()
+
     gc.collect()
-    return render_template('dashboard.html', first_name=first_name, pic_name=pic_name, Bookauthors=Bookauthors, Booktitles=Booktitles, Bookdescriptions=Bookdescriptions)
- 
+    return render_template('dashboard.html', first_name=first_name, pic_name=pic_name, books=books, counter=0)
+
 
 @app.route('/dashboard/change_passwd', methods=['GET', 'POST'])
 @login_required
