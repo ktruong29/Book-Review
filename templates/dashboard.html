@@ -69,7 +69,7 @@
     <!-- Three columns of text below the carousel -->
     <div class="row">
       <div class="text-center">
-        <img src="static/images/{{ pic_name }}" alt="Pig" width="140" height="140" class="rounded-circle">
+        <img src="/static/images/{{ pic_name }}" alt="Pig" width="140" height="140" class="rounded-circle">
         <br><br>
         <a class="btn btn-primary" href="/dashboard/change_pic" role="button">Change your profile picture</a>
         <br>
@@ -93,9 +93,10 @@
             <h2 class="featurette-heading"> {{ book[1] }}</h2>
             <p class="lead">{{ book[3] }}</p>
             <p> {{ book[2] }}</p>
+            <small><a href="{{ book[5] }}" target="_blank">Click here</a> to purchase this book</small>
           </div>
           <div class="col-md-4">
-            <a href="#"><img src="static/images/{{ book[6] }}" alt="Jumping" width="400" height="500" class="rounded mx-auto d-block"></a>
+            <a href="/dashboard/books/{{ book[0] }}"><img src="/static/images/{{ book[6] }}" alt="Jumping" width="400" height="500" class="rounded mx-auto d-block"></a>
           </div>
         </div>
       {% else %}
@@ -107,16 +108,16 @@
             <h2 class="featurette-heading">{{ book[1] }}</h2>
             <p class="lead">{{ book[3] }}</p>
             <p> {{ book[2] }} </p>
+            <small><a href="{{ book[5] }}" target="_blank">Click here</a> to purchase this book</small>
           </div>
           <div class="col-md-5 order-md-1">
-            <a href="#"><img src="static/images/{{ book[6] }}" alt="Jumping" width="400" height="500"></a>
+            <a href="/dashboard/books/{{ book[0] }}"><img src="/static/images/{{ book[6] }}" alt="Jumping" width="400" height="500"></a>
           </div>
         </div>
       {% endif %}
       {% set counter.value = counter.value + 1 %}
     {% endfor %}
 
-    <hr class="featurette-divider">
 
     <!-- /END THE FEATURETTES -->
 

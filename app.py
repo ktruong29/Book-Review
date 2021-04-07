@@ -259,5 +259,15 @@ def change_pic():
         error = str(e)
         return render_template('change_pic.html', pic_name=pic_name, first_name=first_name, error=error, form=form)
 
+@app.route('/dashboard/books/<string:isbn>', methods=['GET', 'POST'])
+@login_required
+def view_and_comment_book(isbn):
+    cursor  = db.cursor()
+    data    = cursor.execute("SELECT * FROM BOOK WHERE ISBN = (%s)", (isbn))
+    data    = cursor.fetchone()
+    cursor.close()
+
+    return render_template('/view_book.html', data=data)
+
 if __name__ == "__main__":
     app.run(debug=True)
