@@ -157,7 +157,7 @@ def dahboard():
     cursor.close()
 
     gc.collect()
-    return render_template('dashboard.html', first_name=first_name, pic_name=pic_name, books=books, counter=0)
+    return render_template('dashboard.html', first_name=first_name, pic_name=pic_name, books=books)
 
 
 @app.route('/dashboard/change_passwd', methods=['GET', 'POST'])
