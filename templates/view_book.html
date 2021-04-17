@@ -1,30 +1,54 @@
-{% extends 'dashboard_base.html' %}
-{% block head %}
+{% extends 'dashboard_base.html' %} {% block head %}
 <title>View and Comment Books</title>
-{% endblock %}
-
-{% block body %}
+{% endblock %} {% block body %}
 <main>
-  <div class="container marketing" style="padding-top:100px">
-    <hr class="featurette-divider">
-    <!-- Book titles + images + books features -->
-    <div class="row featurette">
-      <div class="col-md-7">
-        <h2 class="featurette-heading"> {{ data[1] }}</h2>
-        <p class="lead">{{ data[3] }}</p>
-        <p> {{ data[2] }}</p>
-        <small><a href="{{ data[5] }}" target="_blank">Click here</a> to purchase this book</small>
-      </div>
-      <div class="col-md-4">
-        <img src="/static/images/{{ data[6] }}" alt="Jumping" width="400" height="500" class="rounded mx-auto d-block">
-      </div>
+    <div class="container marketing" style="padding-top:100px">
+        <hr class="featurette-divider">
+        <!-- Book titles + images + books features -->
+        <div class="row featurette">
+            <div class="col-md-7">
+                <h2 class="featurette-heading"> {{ data[1] }}</h2>
+                <p class="lead">{{ data[3] }}</p>
+                <p> {{ data[2] }}</p>
+                <small><a href="{{ data[5] }}" target="_blank">Click here</a> to purchase this book</small>
+            </div>
+            <div class="col-md-4">
+                <img src="/static/images/{{ data[6] }}" alt="Jumping" width="400" height="500" class="rounded mx-auto d-block">
+            </div>
+        </div>
+        <hr>
+
+        <!-- Comment form -->
+        <form autocomplete="off" action='/dashboard/books/{{ isbn }}' method='POST'>
+            <div class="form-group">
+                <label for="coment">Comments</label>
+                <textarea class="form-control" id="comment" name="comment" placeholder="Write a comment..." rows="3"></textarea>
+                <div class="row justify-content-between pt-3">
+                    <div class="col-auto"></div>
+                    <div class="col-auto">
+                        <input type="submit" class="btn btn-primary" value="Submit">
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- Comments -->
+        <hr class="featurette-divider"> {% set counter = namespace(value=0) %} {% for comment in comments %}
+        <div class="container pb-3">
+            <div class="row justify-content-between">
+                <div class="col-auto">
+                    <h5>{{ users[counter.value] }}</h5>
+                </div>
+                <div class="col-auto">
+                    <p class="text-muted">{{ comment[1] }}</p>
+                </div>
+            </div>
+            <div class="row">
+                <p class="lead"><small>{{ comment[2] }}</small></p>
+            </div>
+        </div>
+        {% set counter.value = counter.value + 1 %} {% endfor %}
     </div>
-    <hr>
-    <div class="form-group">
-    <label for="exampleFormControlTextarea1">Comments</label>
-    <textarea class="form-control" id="exampleFormControlTextarea1" placeholder="Write a comment..." rows="3"></textarea>
-  </div>
-  </div>
 </main>
 
 {% endblock %}
