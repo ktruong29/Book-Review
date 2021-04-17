@@ -270,6 +270,10 @@ def view_and_comment_book(isbn):
 
     # =========post user comment=========
     if request.method == 'POST' and 'comment' in request.form:
+        rating = 0;
+        if 'rating' in request.form:
+            rating = int(request.form['rating'])
+
         username = session['username']
         comment = request.form['comment']
 
@@ -281,7 +285,7 @@ def view_and_comment_book(isbn):
 
         # commit data to comment database
         cursor = db.cursor()
-        cursor.execute("INSERT INTO COMMENT(DatePosted, Comment, Rating, PersonID, ISBN) VALUES (NOW(), %s, 5, %s, %s)", (comment, uid, isbn))
+        cursor.execute("INSERT INTO COMMENT(DatePosted, Comment, Rating, PersonID, ISBN) VALUES (NOW(), %s, %s, %s, %s)", (comment, rating, uid, isbn))
         db.commit()
         cursor.close()
         gc.collect()

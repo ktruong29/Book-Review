@@ -21,7 +21,62 @@
         <!-- Comment form -->
         <form autocomplete="off" action='/dashboard/books/{{ isbn }}' method='POST'>
             <div class="form-group">
-                <label for="coment">Comments</label>
+                <div class="row justify-content-between pb-2">
+                    <div class="col-auto">
+                        <label for="coment">Comments</label>
+                    </div>
+                    <div class="col-auto">
+                        <div class="row">
+                            <div class="col-auto">
+                                <label for="coment">Rating</label>
+                            </div>
+                            <style>
+                                .stars:not(:checked)>input {
+                                    position: absolute;
+                                    clip: rect(0, 0, 0, 0);
+                                }
+                                
+                                .stars:not(:checked)>label {
+                                    float: right;
+                                    width: 0.9em;
+                                    overflow: hidden;
+                                    cursor: pointer;
+                                    color: lightgrey;
+                                }
+                                
+                                .stars:not(:checked)>label:before {
+                                    content: "★";
+                                }
+                                
+                                .stars>input:checked~label {
+                                    color: gold;
+                                }
+                                
+                                .stars:not(:checked)>label:hover,
+                                .stars:not(:checked)>label:hover~label {
+                                    color: gold;
+                                }
+                                
+                                .stars>input:checked+label:hover,
+                                .stars>input:checked+label:hover~label,
+                                .stars>input:checked~label:hover,
+                                .stars>input:checked~label:hover~label,
+                                .stars>label:hover~input:checked~label {
+                                    color: gold;
+                                }
+                            </style>
+                            <div class="col-auto">
+                                <ul class="stars">
+                                    <input type="radio" id="5-star" name="rating" value="5" /><label for="5-star">5</label>
+                                    <input type="radio" id="4-star" name="rating" value="4" /><label for="4-star">4</label>
+                                    <input type="radio" id="3-star" name="rating" value="3" /><label for="3-star">3</label>
+                                    <input type="radio" id="2-star" name="rating" value="2" /><label for="2-star">2</label>
+                                    <input type="radio" id="1-star" name="rating" value="1" /><label for="1-star">1</label>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <textarea class="form-control" id="comment" name="comment" placeholder="Write a comment..." rows="3"></textarea>
                 <div class="row justify-content-between pt-3">
                     <div class="col-auto"></div>
@@ -32,12 +87,27 @@
             </div>
         </form>
 
-        <!-- Comments -->
+        <!-- Comments display -->
+        <!-- Font Awesome Icon Library -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <hr class="featurette-divider"> {% set counter = namespace(value=0) %} {% for comment in comments %}
         <div class="container pb-3">
             <div class="row justify-content-between">
                 <div class="col-auto">
-                    <h5>{{ users[counter.value] }}</h5>
+                    <div class="row">
+                        <div class="col-auto">
+                            <h5>{{ users[counter.value] }}</h5>
+                        </div>
+                        <div class="col-auto">
+                            {% for i in range(5) %}
+                                {% if (i + 1) <= comment[3] %}
+                                    <span class="fa fa-star" style="color: orange"></span>
+                                {% else %}
+                                    <span class="fa fa-star"></span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
                 <div class="col-auto">
                     <p class="text-muted">{{ comment[1] }}</p>
