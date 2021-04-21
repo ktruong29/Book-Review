@@ -23,11 +23,11 @@ app.secret_key = 'hjkdjeuqoe157!@'
 
 
 #customhost = <your db endpoint address>
-DB_HOST      = "cpsc362.cqz5lsbthplh.us-east-2.rds.amazonaws.com"
+DB_HOST      = "database-1.cykqbf99bmvw.us-west-1.rds.amazonaws.com"
 # DB_HOST      = "database-1.cykqbf99bmvw.us-west-1.rds.amazonaws.com"
 DB_USER      = "admin"
-# DB_PASS      = "group362"
-DB_PASS      = "adminadmin"
+DB_PASS      = "group362"
+#DB_PASS      = "adminadmin"
 DB_NAME      = "LIBRARY"
 
 #Path to save profile pictures
@@ -262,12 +262,49 @@ def change_pic():
 @app.route('/dashboard/books/<string:isbn>', methods=['GET', 'POST'])
 @login_required
 def view_and_comment_book(isbn):
+    # =========get book info=========
     cursor  = db.cursor()
     data    = cursor.execute("SELECT * FROM BOOK WHERE ISBN = (%s)", (isbn))
     data    = cursor.fetchone()
     cursor.close()
 
-    return render_template('/view_book.html', data=data)
+    # =========post user comment=========
+    if request.method == 'POST' and 'comment' in request.form:
+        rating = 0;
+        if 'rating' in request.form:
+            rating = int(request.form['rating'])
+
+        username = session['username']
+        comment = request.form['comment']
+
+        # get current user id by username
+        cursor = db.cursor()
+        uid = cursor.execute("SELECT id FROM PERSON WHERE Username = (%s)", (username))
+        uid = int(cursor.fetchone()[0])
+        cursor.close()
+
+        # commit data to comment database
+        cursor = db.cursor()
+        cursor.execute("INSERT INTO COMMENT(DatePosted, Comment, Rating, PersonID, ISBN) VALUES (NOW(), %s, %s, %s, %s)", (comment, rating, uid, isbn))
+        db.commit()
+        cursor.close()
+        gc.collect()
+
+    # =========get user comment=========
+    cursor   = db.cursor()
+    comments = cursor.execute("SELECT * FROM COMMENT WHERE ISBN = (%s)", (isbn))
+    comments = cursor.fetchall()
+    cursor.close()
+
+    users = []
+    cursor   = db.cursor()
+    for comment in comments:
+        user = cursor.execute("SELECT Username FROM PERSON WHERE id = (%s)", (comment[4]))
+        user = cursor.fetchone()
+        users.append(user[0])
+    cursor.close()
+
+    return render_template('/view_book.html', data=data, comments=comments, users=users, isbn=isbn, counter=0)
 
 if __name__ == "__main__":
     app.run(debug=True)
