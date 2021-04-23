@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, session, flash
+from flask import Flask, render_template, redirect, request, session, flash, url_for
 import pymysql
 from wtforms import Form, TextField, SubmitField, PasswordField, validators
 from wtforms.fields.html5 import EmailField
@@ -266,8 +266,39 @@ def view_and_comment_book(isbn):
     data    = cursor.execute("SELECT * FROM BOOK WHERE ISBN = (%s)", (isbn))
     data    = cursor.fetchone()
     cursor.close()
+    username = session['username']
 
-    return render_template('/view_book.html', data=data)
+    if request.method == 'POST':
+        comment = request.form['comment']
+        username = session['username']
+        #Add and commit the comment to the db
+        cursor = db.cursor()
+        cursor.execute("INSERT INTO COMMENT (DatePosted, Comment, Username, ISBN) VALUES (NOW(), %s, %s, %s)", (comment, username, isbn))
+        db.commit()
+        cursor.close()
+        gc.collect()
+        return redirect(url_for('view_and_comment_book', isbn=isbn))
+    else:
+        #Query and output all comments to the page
+        cursor = db.cursor()
+        comment = cursor.execute("SELECT * FROM COMMENT WHERE ISBN = (%s)", (isbn))
+        comment = cursor.fetchall()
+        cursor.close()
+        gc.collect()
+        #Can globally access each isbn => simplicity and save time
+        session['isbn'] = isbn
+        return render_template('/view_book.html', data=data, comment=comment, username=username)
+
+@app.route('/dashboard/delete/<string:commentID>', methods=['GET', 'POST'])
+@login_required
+def delete_comment(commentID):
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM COMMENT WHERE CommentID = (%s)", (commentID))
+    db.commit()
+    cursor.close()
+    gc.collect()
+    isbn = session['isbn']
+    return redirect(url_for('view_and_comment_book', isbn=isbn))
 
 if __name__ == "__main__":
     app.run(debug=True)
