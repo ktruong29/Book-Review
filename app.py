@@ -7,6 +7,7 @@ from flask_wtf.file import FileField, FileRequired, FileAllowed
 from werkzeug.utils import secure_filename
 from passlib.hash import sha256_crypt
 from functools import wraps
+from time import gmtime, strftime
 import config
 # import boto3
 import re
@@ -268,7 +269,7 @@ def view_and_comment_book(isbn):
     cursor.close()
     username = session['username']
 
-    if request.method == 'POST':
+    if request.method == 'POST' and len(request.form['comment']) > 0:
         comment = request.form['comment']
         username = session['username']
         #Add and commit the comment to the db
@@ -299,6 +300,32 @@ def delete_comment(commentID):
     gc.collect()
     isbn = session['isbn']
     return redirect(url_for('view_and_comment_book', isbn=isbn))
+
+@app.route('/dashboard/edit/<string:commentID>', methods=['GET', 'POST'])
+@login_required
+def edit_comment(commentID):
+    error = ''
+    cursor = db.cursor()
+    comment = cursor.execute("SELECT * FROM COMMENT WHERE CommentID = (%s)", commentID)
+    comment = cursor.fetchone()
+    cursor.close()
+    gc.collect()
+
+    comment_user = comment[3]
+
+    if request.method == "POST" and len(request.form['comment']):
+        comment = request.form['comment']
+        dateEdited = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+        cursor = db.cursor()
+        cursor.execute("UPDATE COMMENT SET Comment = (%s), DatePosted = (%s) WHERE CommentID = (%s)", (comment, dateEdited, commentID))
+        db.commit()
+        cursor.close()
+        gc.collect()
+        isbn = session['isbn']
+        return redirect(url_for('view_and_comment_book', isbn=isbn))
+    elif comment_user != session['username']:
+        error = "Not found!"
+    return render_template('edit_book.html', comment=comment, error=error)
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -35,7 +35,7 @@
             </div>
               {% if username == comment[3] %}
                 <a class="btn btn-danger btn-sm" href='/dashboard/delete/{{ comment[0] }}'>Delete</a>
-                <a class="btn btn-primary btn-sm" href='#'>Edit</a>
+                <a class="btn btn-primary btn-sm" href='/dashboard/edit/{{ comment[0] }}'>Edit</a>
               {% endif %}
         </div>
         <hr>

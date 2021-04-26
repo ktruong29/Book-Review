@@ -1,0 +1,25 @@
+{% extends 'dashboard_base.html' %}
+{% block head %}
+<title>Edit Comment</title>
+{% endblock %}
+
+{% block body %}
+<main>
+  <div class="container marketing" style="padding-top:100px">
+    <h1>Edit Comment</h1>
+    <hr>
+    <br>
+    <form action="/dashboard/edit/{{ comment[0] }}" method="POST">
+      <div class="form-group">
+      <label for="exampleFormControlTextarea1">Edit your comment below</label>
+      <br><br>
+      <textarea class="form-control" id="exampleFormControlTextarea1" name="comment" placeholder="{{ comment[2] }}" rows="3"></textarea>
+      <br>
+        <input type="submit" class="btn btn-primary" value="Save">
+    </div>
+    </form>
+    <hr>
+  </div>
+</main>
+
+{% endblock %}
