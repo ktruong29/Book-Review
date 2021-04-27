@@ -24,11 +24,11 @@ app.secret_key = 'hjkdjeuqoe157!@'
 
 
 #customhost = <your db endpoint address>
-DB_HOST      = "cpsc362.cqz5lsbthplh.us-east-2.rds.amazonaws.com"
-# DB_HOST      = "database-1.cykqbf99bmvw.us-west-1.rds.amazonaws.com"
+#DB_HOST      = "cpsc362.cqz5lsbthplh.us-east-2.rds.amazonaws.com"
+DB_HOST      = "database-1.cykqbf99bmvw.us-west-1.rds.amazonaws.com"
 DB_USER      = "admin"
-# DB_PASS      = "group362"
-DB_PASS      = "adminadmin"
+DB_PASS      = "group362"
+#DB_PASS      = "adminadmin"
 DB_NAME      = "LIBRARY"
 
 #Path to save profile pictures
@@ -272,9 +272,16 @@ def view_and_comment_book(isbn):
     if request.method == 'POST' and len(request.form['comment']) > 0:
         comment = request.form['comment']
         username = session['username']
-        #Add and commit the comment to the db
+        rating = 0;
+        if 'rating' in request.form:
+            rating = int(request.form['rating'])
+
+        #Add and commit the comment and rating to the db
         cursor = db.cursor()
         cursor.execute("INSERT INTO COMMENT (DatePosted, Comment, Username, ISBN) VALUES (NOW(), %s, %s, %s)", (comment, username, isbn))
+        rating_check = cursor.execute("SELECT * FROM RATING WHERE Username = (%s) AND ISBN = (%s)", (username, isbn))
+        if rating_check == 0:
+            cursor.execute("INSERT INTO RATING (Rating, Username, ISBN) VALUES (%s, %s, %s)", (rating, username, isbn))
         db.commit()
         cursor.close()
         gc.collect()
@@ -284,11 +291,13 @@ def view_and_comment_book(isbn):
         cursor = db.cursor()
         comment = cursor.execute("SELECT * FROM COMMENT WHERE ISBN = (%s)", (isbn))
         comment = cursor.fetchall()
+        rating = cursor.execute("SELECT * FROM RATING WHERE ISBN = (%s)", (isbn))
+        rating = cursor.fetchall()
         cursor.close()
         gc.collect()
         #Can globally access each isbn => simplicity and save time
         session['isbn'] = isbn
-        return render_template('/view_book.html', data=data, comment=comment, username=username)
+        return render_template('/view_book.html', data=data, rating=rating, comment=comment, username=username)
 
 @app.route('/dashboard/delete/<string:commentID>', methods=['GET', 'POST'])
 @login_required
