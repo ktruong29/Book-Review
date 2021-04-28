@@ -24,11 +24,11 @@ app.secret_key = 'hjkdjeuqoe157!@'
 
 
 #customhost = <your db endpoint address>
-#DB_HOST      = "cpsc362.cqz5lsbthplh.us-east-2.rds.amazonaws.com"
-DB_HOST      = "database-1.cykqbf99bmvw.us-west-1.rds.amazonaws.com"
+DB_HOST      = "cpsc362.cqz5lsbthplh.us-east-2.rds.amazonaws.com"
+# DB_HOST      = "database-1.cykqbf99bmvw.us-west-1.rds.amazonaws.com"
 DB_USER      = "admin"
-DB_PASS      = "group362"
-#DB_PASS      = "adminadmin"
+# DB_PASS      = "group362"
+DB_PASS      = "adminadmin"
 DB_NAME      = "LIBRARY"
 
 #Path to save profile pictures
@@ -282,6 +282,11 @@ def view_and_comment_book(isbn):
         rating_check = cursor.execute("SELECT * FROM RATING WHERE Username = (%s) AND ISBN = (%s)", (username, isbn))
         if rating_check == 0:
             cursor.execute("INSERT INTO RATING (Rating, Username, ISBN) VALUES (%s, %s, %s)", (rating, username, isbn))
+        elif rating != 0:
+            rating_check = cursor.fetchone()
+            if int(rating_check[0]) != rating:
+                cursor.execute("UPDATE RATING SET Rating = (%s) WHERE Username = (%s)", (rating, username))
+
         db.commit()
         cursor.close()
         gc.collect()
