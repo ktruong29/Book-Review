@@ -1,0 +1,25 @@
+{% extends 'dashboard_base.html' %} {% block head %}
+<title>Search result</title>
+{% endblock %} {% block body %}
+<main>
+    <div class="container marketing" style="padding-top:100px">
+        <h1>Search result</h1>
+        {% for result in results %}
+             <hr class="featurette-divider">
+        <!-- Book titles + images + books features -->
+        <div class="row featurette">
+            <div class="col-md-7">
+                <h2 class="featurette-heading"> {{ result[1] }}</h2>
+                <p class="lead">{{ result[3] }}</p>
+                <p> {{ result[2] }}</p>
+                <small><a href="{{ result[5] }}" target="_blank">Click here</a> to purchase this book</small>
+            </div>
+            <div class="col-md-4">
+            <a href="/dashboard/books/{{ result[0] }}"><img src="/static/images/{{ result[6] }}" alt="Jumping" width="400" height="500" class="rounded mx-auto d-block"></a>
+            </div>
+        </div>
+        {% endfor %}   
+    </div> 
+</main>
+
+{% endblock %}

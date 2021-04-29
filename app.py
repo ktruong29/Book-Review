@@ -157,9 +157,26 @@ def dahboard():
     books    = cursor.fetchall()
     cursor.close()
 
+    if request.method == "POST":
+        search = cursor.execute("SELECT * FROM BOOK WHERE Title = (%s)", request.form['search'])
+        return render_template("results.html", records=cursor.fetchall())
+
     gc.collect()
     return render_template('dashboard.html', first_name=first_name, pic_name=pic_name, books=books)
 
+@app.route('/result', methods=['GET', 'POST'])
+@login_required
+def search_result():
+    if request.method == "POST" and len(request.form['search']) > 0:
+        search = request.form['search']
+        cursor  = db.cursor()
+        search_result    = cursor.execute("SELECT * FROM BOOK WHERE Title LIKE %s", ('%' + search + '%'))
+        search_result    = cursor.fetchall()
+        cursor.close()
+        gc.collect()
+        return render_template('result.html', results=search_result)
+    else:
+        return redirect('/dashboard')
 
 @app.route('/dashboard/change_passwd', methods=['GET', 'POST'])
 @login_required
