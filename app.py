@@ -32,7 +32,7 @@ DB_PASS      = "adminadmin"
 DB_NAME      = "LIBRARY"
 
 #Path to save profile pictures
-DIR_PATH = "/home/kient/project362/cpsc362-group-project/static/images"
+DIR_PATH = "static/images"
 #Connecting to MySQL instance RDS
 try:
     db = pymysql.connect(host=DB_HOST, port=3306, user=DB_USER, password=DB_PASS, db=DB_NAME)
@@ -240,7 +240,7 @@ def change_pic():
             ''' ****************************************************************
             ---------- Save the newly updated picture locally ----------
             *****************************************************************'''
-            pic_name.save(os.path.join(DIR_PATH, pic_name.filename))
+            pic_name.save(os.path.join(os.path.abspath(DIR_PATH), pic_name.filename))
 
             ''' ****************************************************************
             ---------- Update Profile_URL (filename of pix) to db ----------
