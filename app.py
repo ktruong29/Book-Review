@@ -341,5 +341,19 @@ def edit_comment(commentID):
         error = "Not found!"
     return render_template('edit_book.html', comment=comment, error=error)
 
+@app.route('/result', methods=['GET', 'POST'])
+@login_required
+def search_result():
+    if request.method == "POST" and len(request.form['search']) > 0:
+        search = request.form['search']
+        cursor  = db.cursor()
+        search_result    = cursor.execute("SELECT * FROM BOOK WHERE Title or AuthorName LIKE %s", ('%' + search + '%'))
+        search_result    = cursor.fetchall()
+        cursor.close()
+        gc.collect()
+        return render_template('result.html', results=search_result)
+    else:
+        return redirect('/dashboard')
+
 if __name__ == "__main__":
     app.run(debug=True)
