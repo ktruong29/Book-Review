@@ -282,12 +282,21 @@ def view_and_comment_book(isbn):
         rating_check = cursor.execute("SELECT * FROM RATING WHERE Username = (%s) AND ISBN = (%s)", (username, isbn))
         if rating_check == 0:
             cursor.execute("INSERT INTO RATING (Rating, Username, ISBN) VALUES (%s, %s, %s)", (rating, username, isbn))
+            db.commit()
+        #If the user wants to rate the same book again, executes this statement
         elif rating != 0:
             rating_check = cursor.fetchone()
             if int(rating_check[0]) != rating:
                 cursor.execute("UPDATE RATING SET Rating = (%s) WHERE Username = (%s)", (rating, username))
+                db.commit()
+        #Calculate the average rating using ratings from all comments (with a currently viewed book)
+        avg_rating = cursor.execute("SELECT AVG(Rating) FROM RATING WHERE ISBN = (%s)", (isbn))
 
-        db.commit()
+        #When there's at least one rating returned by the query
+        if avg_rating > 0:
+            avg_rating = cursor.fetchone()
+            cursor.execute("UPDATE BOOK SET AverageRating = (%s) WHERE ISBN = (%s)", (avg_rating[0], isbn))
+            db.commit()
         cursor.close()
         gc.collect()
         return redirect(url_for('view_and_comment_book', isbn=isbn))

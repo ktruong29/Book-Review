@@ -92,6 +92,11 @@
           <div class="col-md-7">
             <h2 class="featurette-heading"> {{ book[1] }}</h2>
             <p class="lead">{{ book[3] }}</p>
+            {% if book[4] != 0.0 %}
+              <small><i>Average rating: {{ book[4] }}</i></small><br><br>
+            {% else %}
+              <small"><i>Not rated yet</i></small><br><br>
+            {% endif %}
             <p> {{ book[2] }}</p>
             <small><a href="{{ book[5] }}" target="_blank">Click here</a> to purchase this book</small>
           </div>
@@ -107,6 +112,11 @@
           <div class="col-md-7 order-md-2">
             <h2 class="featurette-heading">{{ book[1] }}</h2>
             <p class="lead">{{ book[3] }}</p>
+            {% if book[4] != 0.0 %}
+              <small><i>Average rating: {{ book[4] }}</i></small><br><br>
+            {% else %}
+              <small"><i>Not rated yet</i></small><br><br>
+            {% endif %}
             <p> {{ book[2] }} </p>
             <small><a href="{{ book[5] }}" target="_blank">Click here</a> to purchase this book</small>
           </div>
