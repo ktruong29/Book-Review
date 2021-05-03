@@ -9,6 +9,7 @@
             <div class="col-md-7">
                 <h2 class="featurette-heading"> {{ data[1] }}</h2>
                 <p class="lead">{{ data[3] }}</p>
+                <small"><i>Average rating: {{ data[4] }}</i></small><br><br>
                 <p> {{ data[2] }}</p>
                 <small><a href="{{ data[5] }}" target="_blank">Click here</a> to purchase this book</small>
             </div>
@@ -25,7 +26,7 @@
                 <div class="col-auto">
                     <small class="text-muted">Date Posted: {{ comment[1] }}</small><br>
                     <small class="text-muted">By: <i>{{ comment[3] }}</i></small><br>
-                    {% for rating in rating %} 
+                    {% for rating in rating %}
                       {% if rating[1] == comment[3] %}
                         <small class="text-muted">Rating: <i>{{ rating[0] }}</i></small>
                       {% endif %}
@@ -70,7 +71,7 @@
                                     position: absolute;
                                     clip: rect(0, 0, 0, 0);
                                 }
-                                
+
                                 .stars:not(:checked)>label {
                                     float: right;
                                     width: 0.9em;
@@ -78,20 +79,20 @@
                                     cursor: pointer;
                                     color: lightgrey;
                                 }
-                                
+
                                 .stars:not(:checked)>label:before {
                                     content: "★";
                                 }
-                                
+
                                 .stars>input:checked~label {
                                     color: gold;
                                 }
-                                
+
                                 .stars:not(:checked)>label:hover,
                                 .stars:not(:checked)>label:hover~label {
                                     color: gold;
                                 }
-                                
+
                                 .stars>input:checked+label:hover,
                                 .stars>input:checked+label:hover~label,
                                 .stars>input:checked~label:hover,
