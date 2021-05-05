@@ -32,7 +32,7 @@ DB_PASS      = "adminadmin"
 DB_NAME      = "LIBRARY"
 
 #Path to save profile pictures
-DIR_PATH = "static/images"
+DIR_PATH = "static/images/users"
 #Connecting to MySQL instance RDS
 try:
     db = pymysql.connect(host=DB_HOST, port=3306, user=DB_USER, password=DB_PASS, db=DB_NAME)
