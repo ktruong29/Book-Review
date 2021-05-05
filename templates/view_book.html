@@ -9,7 +9,11 @@
             <div class="col-md-7">
                 <h2 class="featurette-heading"> {{ data[1] }}</h2>
                 <p class="lead">{{ data[3] }}</p>
-                <small"><i>Average rating: {{ data[4] }}</i></small><br><br>
+                {% if data[4] != 0.0 %}
+                  <small><i>Average rating: {{ data[4] }}</i></small><br><br>
+                {% else %}
+                  <small"><i>Not rated yet</i></small><br><br>
+                {% endif %}
                 <p> {{ data[2] }}</p>
                 <small><a href="{{ data[5] }}" target="_blank">Click here</a> to purchase this book</small>
             </div>
