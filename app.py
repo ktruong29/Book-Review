@@ -1,35 +1,10 @@
-from flask import Flask, render_template, redirect, request, session, flash, url_for
-import pymysql
-from wtforms import Form, TextField, SubmitField, PasswordField, validators
-from wtforms.fields.html5 import EmailField
-from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileRequired, FileAllowed
-from werkzeug.utils import secure_filename
-from passlib.hash import sha256_crypt
-from functools import wraps
-from time import gmtime, strftime
-import config
-# import boto3
-import re
-import gc
-import sys
-import logging
-import os
-# from flask_wtf.csrf import CsrfProtect
+from init import *
+from config import *
 
 logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 # CsrfProtect(app)
 app.secret_key = 'hjkdjeuqoe157!@'
-
-
-#customhost = <your db endpoint address>
-DB_HOST      = "cpsc362.cqz5lsbthplh.us-east-2.rds.amazonaws.com"
-# DB_HOST      = "database-1.cykqbf99bmvw.us-west-1.rds.amazonaws.com"
-DB_USER      = "admin"
-# DB_PASS      = "group362"
-DB_PASS      = "adminadmin"
-DB_NAME      = "LIBRARY"
 
 #Path to save profile pictures
 DIR_PATH = "static/images/users"
@@ -38,30 +13,6 @@ try:
     db = pymysql.connect(host=DB_HOST, port=3306, user=DB_USER, password=DB_PASS, db=DB_NAME)
 except Exception as e:
     print(str(e))
-
-#Registration form that can validate user inputs
-#To use validators.Email, first install $ pip3 install wtforms[email]
-class RegistrationForm(Form):
-    fname    = TextField('First name', [validators.Length(min=1, max=30)])
-    lname    = TextField('Last name', [validators.Length(min=1, max=30)])
-    email    = EmailField('Email address', [validators.Length(min=6, max=50),
-                                            validators.Email(message="Enter a valid email"),
-                                            validators.DataRequired()])
-    username = TextField('Username', [validators.Length(min=4, max=100)])
-    password = PasswordField('Password', [validators.DataRequired(), validators.Length(min=6, max=20),
-                                          validators.EqualTo('confirm', message="Password must match")])
-    confirm  = PasswordField('Repeat Password')
-
-class ChangePasswordForm(Form):
-    old_password = PasswordField('Old Password', [validators.DataRequired()])
-    new_password = PasswordField('New Password', [validators.DataRequired(), validators.Length(min=6, max=20),
-                                          validators.EqualTo('confirm', message="Password must match")])
-    confirm  = PasswordField('Repeat New Password')
-
-class PhotoForm(FlaskForm):
-    new_photo = FileField('Upload a new picture', validators=[FileRequired(),
-                                  FileAllowed(['jpg', 'png', 'jpeg'])])
-    submit = SubmitField('Submit')
 
 @app.route('/')
 def home():
@@ -356,11 +307,11 @@ def search_result():
     if request.method == "POST" and len(request.form['search']) > 0:
         search = request.form['search']
         cursor  = db.cursor()
-        search_result    = cursor.execute("SELECT * FROM BOOK WHERE Title or AuthorName LIKE %s", ('%' + search + '%'))
+        search           = cursor.execute("SELECT * FROM BOOK WHERE Title or AuthorName LIKE %s", ('%' + search + '%'))
         search_result    = cursor.fetchall()
         cursor.close()
         gc.collect()
-        return render_template('result.html', results=search_result)
+        return render_template('result.html', results=search_result, found=search)
     else:
         return redirect('/dashboard')
 

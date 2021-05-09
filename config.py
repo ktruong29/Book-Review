@@ -1,5 +1,7 @@
-#customhost = <your db endpoint address>
-customhost      = "aws-project-362.cxt6a6u8d073.us-east-1.rds.amazonaws.com"
-customuser      = "admin"
-custompass      = "group362"
-customdb        = "LIBRARY"
+#DB_HOST = <your db endpoint address>
+DB_HOST      = "cpsc362.cqz5lsbthplh.us-east-2.rds.amazonaws.com"
+# DB_HOST      = "database-1.cykqbf99bmvw.us-west-1.rds.amazonaws.com"
+DB_USER      = "admin"
+# DB_PASS      = "group362"
+DB_PASS      = "adminadmin"
+DB_NAME      = "LIBRARY"
